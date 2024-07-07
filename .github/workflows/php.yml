@@ -1,0 +1,34 @@
+name: PHP CI
+
+on: [push, pull_request]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        php-version: ['7.1', '7.4', '8.0']  # Укажите нужные версии PHP
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ matrix.php-version }}
+        extensions: curl
+        coverage: none
+
+    - name: Check PHP version
+      run: php -v
+
+    - name: Check cURL extension
+      run: php -m | grep curl
+
+    - name: Install dependencies
+      run: composer install  # Убедитесь, что у вас есть файл composer.json
+
+    - name: Run tests
+      run: vendor/bin/phpunit  # Команда для запуска тестов
